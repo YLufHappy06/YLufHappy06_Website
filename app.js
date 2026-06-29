@@ -44,7 +44,7 @@ async function subscribeUserToPush(userId) {
 
       console.log('Quyền đã được cấp. Đang lấy mã định danh thiết bị (Token)...');
       // C. Thay chuỗi dưới đây bằng khóa Public Key bạn vừa tạo từ knock.app hoặc vapidkeys.com
-      const publicVapidKey = 'BKLNwfs7yiAVKI9MeHOkby1sl42X008nbFV7olZmPlbrj0JmP4pXF7YlmaB4juxAyGOao4odIZTDQRI4HF4OTWU';
+      const publicVapidKey = 'BKJk1XCqwD3CA8Ozjh3uo5FlJFD9PksSvN3j6pWpapW02sg3iJxVSNedWzF0kkacjKgaCNrHoKiot16mgTG3cJo';
       
       // D. Đăng ký thiết bị với máy chủ Push của trình duyệt (Google/Apple)
       const subscription = await registration.pushManager.subscribe({
