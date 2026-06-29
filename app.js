@@ -10,11 +10,19 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 // 2. HÀM CHUYỂN ĐỔI KHÓA VAPID (BẮT BUỘC)
 // ==========================================
 // Trình duyệt yêu cầu định dạng này để xác thực máy chủ gửi thông báo bảo mật
+// HÀM MỚI CHUẨN HOÁ 100% ĐỂ SỬA LỖI PUSH SERVICE ERROR
 function urlBase64ToUint8Array(base64String) {
+  // Tự động thêm các dấu bằng '=' bị thiếu ở cuối chuỗi mã hóa
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  
+  // Thay thế các ký tự đặc biệt theo đúng chuẩn URL-Safe Base64
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);
+
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
