@@ -30,8 +30,9 @@ async function subscribeUserToPush(userId) {
     try {
       console.log('Đang kích hoạt Service Worker chạy ngầm...');
       // A. Kích hoạt file sw.js chạy ngầm dưới trình duyệt
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      
+      const swUrl = new URL('./sw.js', import.meta.url).href;
+      const registration = await navigator.serviceWorker.register(swUrl);
+        
       console.log('Đang xin quyền hiển thị thông báo từ người dùng...');
       // B. Hỏi xin quyền "Cho phép hiển thị thông báo" (Hiện Pop-up Allow/Block)
       const permission = await Notification.requestPermission();
