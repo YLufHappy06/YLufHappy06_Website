@@ -1,6 +1,7 @@
 // File: sw.js
 self.addEventListener('push', function(event) {
-  // Nhận dữ liệu text từ Supabase gửi sang
+  console.log('Đã nhận sự kiện push từ Edge Function!');
+  
   let payload = event.data ? event.data.text() : 'Bạn có tin nhắn mới!';
   let data = {};
   
@@ -12,36 +13,38 @@ self.addEventListener('push', function(event) {
 
   const options = {
     body: data.body,
-    icon: '/icon.png',       // Thay bằng ảnh logo của bạn nếu có
-    badge: '/badge.png',     // Biểu tượng nhỏ trên thanh thông báo Android
-    vibrate: true, // Rung điện thoại nếu là Android
+    icon: '/icon.png',       
+    badge: '/badge.png',     
+    vibrate:, // Sửa lại mảng rung chuẩn cho Android
     data: {
-      url: '/'               // Đường dẫn sẽ mở khi bấm vào thông báo
+      url: data.url || '/'   // Lấy URL động từ database gửi sang nếu có, mặc định là trang chủ
     }
   };
 
-  // Ra lệnh cho hệ điều hành hiển thị thông báo dạng Pop-up hệ thống
   event.waitUntil(
     self.registration.showNotification(data.title, options)
   );
 });
 
-// Xử lý khi người dùng bấm vào dòng thông báo trên màn hình máy tính/điện thoại
+// Xử lý khi người dùng bấm vào dòng thông báo
 self.addEventListener('notificationclick', function(event) {
-  event.notification.close(); // Đóng thông báo lại
+  event.notification.close(); 
+  
+  // Lấy URL đích được gắn kèm trong thông báo (ví dụ: "https://yourdomain.com")
+  const targetUrl = new URL(event.notification.data.url, self.location.origin).href;
   
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-      // Nếu tab đang mở nhưng bị thu nhỏ, tự động tối ưu hóa và đưa tab lên trước mặt
+      // Kiểm tra xem đã có tab nào đang mở đúng URL đó chưa
       for (let i = 0; i < clientList.length; i++) {
         let client = clientList[i];
-        if (client.url === '/' && 'focus' in client) {
+        if (client.url === targetUrl && 'focus' in client) {
           return client.focus();
         }
       }
-      // Nếu tab đã bị tắt hoàn toàn, mở một tab mới
+      // Nếu không tìm thấy tab cũ trùng URL, tiến hành mở tab mới
       if (clients.openWindow) {
-        return clients.openWindow('/');
+        return clients.openWindow(targetUrl);
       }
     })
   );
