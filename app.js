@@ -39,8 +39,8 @@ async function subscribeUserToPush(userId) {
       console.log('Đang kích hoạt Service Worker chạy ngầm...');
       // A. Kích hoạt file sw.js chạy ngầm dưới trình duyệt
 // DÒNG MỚI THAY THẾ (Ép trình duyệt nhận diện đúng thư mục dự án GitHub Pages):
-      const swUrl = new URL('./sw.js', import.meta.url).href;
-      const registration = await navigator.serviceWorker.register(swUrl, { scope: './' });
+// DÒNG MỚI THAY THẾ (Đơn giản, tương thích hoàn toàn với GitHub Pages):
+      const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
         
       console.log('Đang xin quyền hiển thị thông báo từ người dùng...');
       // B. Hỏi xin quyền "Cho phép hiển thị thông báo" (Hiện Pop-up Allow/Block)
