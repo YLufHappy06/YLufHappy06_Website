@@ -13,11 +13,11 @@ self.addEventListener('push', function(event) {
 
   const options = {
     body: data.body,
-    icon: '/icon.png',       
-    badge: '/badge.png',     
-    vibrate:, // Sửa lại mảng rung chuẩn cho Android
+    icon: './icon.png', // Dùng dấu chấm '.' để chạy đúng cấu trúc thư mục con của GitHub Pages
+    badge: './badge.png',     
+    vibrate:, // Định dạng chuẩn: Rung 200ms, nghỉ 100ms, rồi rung tiếp 200ms
     data: {
-      url: data.url || '/'   // Lấy URL động từ database gửi sang nếu có, mặc định là trang chủ
+      url: data.url || '/'   
     }
   };
 
@@ -30,19 +30,16 @@ self.addEventListener('push', function(event) {
 self.addEventListener('notificationclick', function(event) {
   event.notification.close(); 
   
-  // Lấy URL đích được gắn kèm trong thông báo (ví dụ: "https://yourdomain.com")
   const targetUrl = new URL(event.notification.data.url, self.location.origin).href;
   
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-      // Kiểm tra xem đã có tab nào đang mở đúng URL đó chưa
       for (let i = 0; i < clientList.length; i++) {
         let client = clientList[i];
         if (client.url === targetUrl && 'focus' in client) {
           return client.focus();
         }
       }
-      // Nếu không tìm thấy tab cũ trùng URL, tiến hành mở tab mới
       if (clients.openWindow) {
         return clients.openWindow(targetUrl);
       }
