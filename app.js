@@ -54,11 +54,37 @@ async function subscribeUserToPush(userId) {
       // C. Thay chuỗi dưới đây bằng khóa Public Key bạn vừa tạo từ knock.app hoặc vapidkeys.com
       const publicVapidKey = 'BKJk1XCqwD3CA8Ozjh3uo5FlJFD9PksSvN3j6pWpapW02sg3iJxVSNedWzF0kkacjKgaCNrHoKiot16mgTG3cJo';
       
-      // D. Đăng ký thiết bị với máy chủ Push của trình duyệt (Google/Apple)
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-      });
+      // // D. Đăng ký thiết bị với máy chủ Push của trình duyệt (Google/Apple)
+      console.log('Đang kiểm tra và đăng ký Subscription với cổng Push...');
+      
+      // 1. Kiểm tra xem trình duyệt đã từng có Subscription nào tồn tại chưa
+      let subscription = await registration.pushManager.getSubscription();
+      
+      if (subscription) {
+        // Biến đổi khóa cũ của trình duyệt sang dạng chuỗi để so sánh
+        const currentKey = subscription.options.applicationServerKey 
+          ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.options.applicationServerKey)))
+              .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+          : '';
+        
+        const newKey = publicVapidKey.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      
+        // 2. Nếu khóa cũ khác khóa mới (Lỗi InvalidStateError), tiến hành hủy gói cũ ngay lập tức
+        if (currentKey !== newKey) {
+          console.warn('Phát hiện khóa VAPID cũ không khớp. Đang tiến hành hủy đăng ký cũ...');
+          await subscription.unsubscribe();
+          subscription = null; // Xóa trạng thái để tạo cái mới ở bước sau
+        }
+      }
+      
+      // 3. Tiến hành đăng ký gói Subscription mới với khóa chuẩn 100%
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+        });
+        console.log('Đã tạo thành công gói Subscription mới với khóa VAPID chuẩn!');
+      }
 
       console.log('Đang lưu Token thiết bị lên bảng user_push_tokens của Supabase...');
       // E. Lưu hoặc cập nhật (Ghi đè nếu đã tồn tại) Token vào bảng user_push_tokens
