@@ -1,7 +1,7 @@
 // File: app.js (Bản vá tối ưu hóa tối đa, dọn dẹp lỗi Subscription ẩn trên iOS PWA)
 
 (() => {
-  const CONFIG_URL = 'https://supabase.co'; 
+  const CONFIG_URL = 'https://qwoosgkddaovxtavskga.supabase.co'; 
   const CONFIG_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3b29zZ2tkZGFvdnh0YXZza2dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MjI0ODQsImV4cCI6MjA5ODI5ODQ4NH0.jaFpQq_Cvxo6NziBh__-rZVsUdqbHY1ShjF7JeeFJWo';
   const publicVapidKey = 'BKJk1XCqwD3CA8Ozjh3uo5FlJFD9PksSvN3j6pWpapW02sg3iJxVSNedWzF0kkacjKgaCNrHoKiot16mgTG3cJo'; 
 
@@ -34,7 +34,7 @@
         };
       } else {
         if (notiBtn) {
-          notiBtn.innerText = '🔒 Đăng nhập để cấu hình thông báo';
+          notiBtn.innerText = '🔒 Notification';
           notiBtn.className = 'noti-btn-disabled';
           notiBtn.onclick = null;
         }
@@ -45,19 +45,19 @@
   async function updateButtonUI() {
     if (!notiBtn) return;
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      notiBtn.innerText = '🚫 Không hỗ trợ thông báo';
+      notiBtn.innerText = '🚫 Notification is not available';
       return;
     }
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       if (Notification.permission === 'granted' && subscription) {
-        notiBtn.innerText = '🟢 Đã bật thông báo (Bấm để Tắt)';
+        notiBtn.innerText = '🟢 Notification: On';
       } else {
-        notiBtn.innerText = '🔴 Đang tắt thông báo (Bấm để Bật)';
+        notiBtn.innerText = '🔴 Notification: Off';
       }
     } catch (e) {
-      notiBtn.innerText = '🔴 Đang tắt thông báo (Bấm để Bật)';
+      notiBtn.innerText = '🔴 Notification: Off)';
     }
   }
 
@@ -76,7 +76,7 @@
       if (subscription) {
         await subscription.unsubscribe();
         await supabase.from('user_push_tokens').delete().eq('user_id', userId);
-        notiBtn.innerText = '🔴 Đang tắt thông báo (Bấm để Bật)';
+        notiBtn.innerText = '🔴 Notification: Off';
         console.log('Đã tắt thông báo thành công.');
       } 
       // TRƯỜNG HỢP 2: BẬT THÔNG BÁO
@@ -112,7 +112,7 @@
           push_token: JSON.stringify(subscription)
         });
 
-        notiBtn.innerText = '🟢 Đã bật thông báo (Bấm để Tắt)';
+        notiBtn.innerText = '🟢 Notification: On';
         console.log('Đã lưu token lên database thành công!');
       }
     } catch (error) {
