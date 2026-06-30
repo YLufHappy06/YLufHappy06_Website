@@ -15,7 +15,7 @@ self.addEventListener('push', function(event) {
     body: data.body,
     icon: './icon.png', // Dùng dấu chấm '.' để chạy đúng cấu trúc thư mục con của GitHub Pages
     badge: './badge.png',     
-    vibrate:, // Định dạng chuẩn: Rung 200ms, nghỉ 100ms, rồi rung tiếp 200ms
+    vibrate: [200, 100, 200], // Định dạng chuẩn: Rung 200ms, nghỉ 100ms, rồi rung tiếp 200ms
     data: {
       url: data.url || '/'   
     }
