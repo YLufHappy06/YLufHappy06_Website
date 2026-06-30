@@ -13,8 +13,8 @@ self.addEventListener('push', function(event) {
 
   const options = {
     body: data.body,
-    icon: './icon.png', // Dùng dấu chấm '.' để chạy đúng cấu trúc thư mục con của GitHub Pages
-    badge: './badge.png',     
+    icon: 'https://cdn.modrinth.com/data/tADpI62B/8cc7e6f98e2716210e7d6290af68347f620fa0f6.png', // Dùng dấu chấm '.' để chạy đúng cấu trúc thư mục con của GitHub Pages
+    badge: 'https://cdn.modrinth.com/data/tADpI62B/8cc7e6f98e2716210e7d6290af68347f620fa0f6.png',     
     vibrate: [200, 100, 200], // Định dạng chuẩn: Rung 200ms, nghỉ 100ms, rồi rung tiếp 200ms
     data: {
       url: data.url || '/'   
