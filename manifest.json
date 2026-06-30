@@ -8,7 +8,7 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./icon.png",
+      "src": "https://cdn.modrinth.com/data/tADpI62B/8cc7e6f98e2716210e7d6290af68347f620fa0f6.png",
       "sizes": "192x192",
       "type": "image/png"
     }
